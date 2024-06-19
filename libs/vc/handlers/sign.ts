@@ -1,14 +1,14 @@
+import { Result } from "@/types/result";
 import { VC, sign } from "@zkp-ld/jsonld-proofs";
 import { DocumentLoader } from "@zkp-ld/jsonld-proofs/lib/types";
-import { Result } from "../../../types/result";
 
 export const generateVC = async (
-  vc: string,
+  doc: string,
   keyPairs: string,
   documentLoader: DocumentLoader,
 ): Promise<Result<VC>> => {
-  const vcJSON = JSON.parse(vc);
+  const docJSON = JSON.parse(doc);
   const keyPairsJSON = JSON.parse(keyPairs);
-  const vcSigned = await sign(vcJSON, keyPairsJSON, documentLoader);
+  const vcSigned = await sign(docJSON, keyPairsJSON, documentLoader);
   return { ok: true, value: vcSigned };
 };

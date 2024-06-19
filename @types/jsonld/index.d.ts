@@ -1,11 +1,11 @@
 import { ContextDefinition, JsonLdDocument } from "./jsonld";
 import {
-    Frame,
-    JsonLdArray,
-    JsonLdObj,
-    JsonLdProcessor as JsonLdProcessorInterface,
-    RemoteDocument,
-    Url,
+  Frame,
+  JsonLdArray,
+  JsonLdObj,
+  JsonLdProcessor as JsonLdProcessorInterface,
+  RemoteDocument,
+  Url,
 } from "./jsonld-spec";
 export * from "./jsonld";
 
@@ -15,8 +15,8 @@ type RdfDataSet = object; // Placeholder
 type Callback<T> = (err: Error, res: T) => void;
 
 export namespace documentLoaders {
-    function node(): (url: Url) => Promise<RemoteDocument>;
-    function xhr(): (url: Url) => Promise<RemoteDocument>;
+  function node(): (url: Url) => Promise<RemoteDocument>;
+  function xhr(): (url: Url) => Promise<RemoteDocument>;
 }
 
 /*
@@ -25,74 +25,74 @@ export namespace documentLoaders {
  */
 
 export namespace Options {
-    interface DocLoader {
-        documentLoader?: (url: Url) => Promise<RemoteDocument>;
-    }
+  interface DocLoader {
+    documentLoader?: (url: Url) => Promise<RemoteDocument>;
+  }
 
-    interface Safe {
-        safe?: boolean | undefined;
-    }
+  interface Safe {
+    safe?: boolean | undefined;
+  }
 
-    interface Common extends DocLoader, Safe {
-        base?: string | undefined;
-        expandContext?: ContextDefinition | undefined;
-    }
+  interface Common extends DocLoader, Safe {
+    base?: string | undefined;
+    expandContext?: ContextDefinition | undefined;
+  }
 
-    interface ExpMap {
-        // TODO: Figure out type of info
-        expansionMap?: ((info: any) => any) | undefined;
-    }
+  interface ExpMap {
+    // TODO: Figure out type of info
+    expansionMap?: ((info: any) => any) | undefined;
+  }
 
-    interface Compact extends Common, ExpMap {
-        compactArrays?: boolean | undefined;
-        appropriate?: boolean | undefined;
-        compactToRelative?: boolean | undefined;
-        graph?: boolean | undefined;
-        skipExpansion?: boolean | undefined;
-        expansion?: boolean | undefined;
-        framing?: boolean | undefined;
-        // TODO: Figure out type of info
-        compactionMap?: ((info: any) => void) | undefined;
-    }
+  interface Compact extends Common, ExpMap {
+    compactArrays?: boolean | undefined;
+    appropriate?: boolean | undefined;
+    compactToRelative?: boolean | undefined;
+    graph?: boolean | undefined;
+    skipExpansion?: boolean | undefined;
+    expansion?: boolean | undefined;
+    framing?: boolean | undefined;
+    // TODO: Figure out type of info
+    compactionMap?: ((info: any) => void) | undefined;
+  }
 
-    interface Expand extends Common, ExpMap {
-        keepFreeFloatingNodes?: boolean | undefined;
-    }
+  interface Expand extends Common, ExpMap {
+    keepFreeFloatingNodes?: boolean | undefined;
+  }
 
-    type Flatten = Common;
+  type Flatten = Common;
 
-    interface Frame extends Common {
-        embed?: "@last" | "@always" | "@never" | "@link" | undefined;
-        explicit?: boolean | undefined;
-        requireAll?: boolean | undefined;
-        omitDefault?: boolean | undefined;
-        omitGraph?: boolean | undefined;
-    }
+  interface Frame extends Common {
+    embed?: "@last" | "@always" | "@never" | "@link" | undefined;
+    explicit?: boolean | undefined;
+    requireAll?: boolean | undefined;
+    omitDefault?: boolean | undefined;
+    omitGraph?: boolean | undefined;
+  }
 
-    interface Normalize extends Common {
-        algorithm?: "URDNA2015" | "URGNA2012" | undefined;
-        skipExpansion?: boolean | undefined;
-        expansion?: boolean | undefined;
-        inputFormat?: MimeNQuad | undefined;
-        format?: MimeNQuad | undefined;
-        useNative?: boolean | undefined;
-    }
+  interface Normalize extends Common {
+    algorithm?: "URDNA2015" | "URGNA2012" | undefined;
+    skipExpansion?: boolean | undefined;
+    expansion?: boolean | undefined;
+    inputFormat?: MimeNQuad | undefined;
+    format?: MimeNQuad | undefined;
+    useNative?: boolean | undefined;
+  }
 
-    interface FromRdf extends Safe {
-        format?: MimeNQuad | undefined;
-        rdfParser?: any;
-        useRdfType?: boolean | undefined;
-        useNativeTypes?: boolean | undefined;
-    }
+  interface FromRdf extends Safe {
+    format?: MimeNQuad | undefined;
+    rdfParser?: any;
+    useRdfType?: boolean | undefined;
+    useNativeTypes?: boolean | undefined;
+  }
 
-    interface ToRdf extends Common {
-        skipExpansion?: boolean | undefined;
-        format?: MimeNQuad | undefined;
-        produceGeneralizedRdf?: boolean | undefined;
-    }
+  interface ToRdf extends Common {
+    skipExpansion?: boolean | undefined;
+    format?: MimeNQuad | undefined;
+    produceGeneralizedRdf?: boolean | undefined;
+  }
 
-    // TODO Complete and uncomment if needed (see comments at the end of the file)
-    /* NOT USED AT THE MOMENT
+  // TODO Complete and uncomment if needed (see comments at the end of the file)
+  /* NOT USED AT THE MOMENT
     // type Link = Common;
     interface Issuer {
 
@@ -119,44 +119,113 @@ export namespace Options {
 }
 
 export function compact(
-    input: JsonLdDocument,
-    ctx: ContextDefinition,
-    options: Options.Compact,
-    callback: Callback<JsonLdObj>,
+  input: JsonLdDocument,
+  ctx: ContextDefinition,
+  options: Options.Compact,
+  callback: Callback<JsonLdObj>,
 ): void;
-export function compact(input: JsonLdDocument, ctx: ContextDefinition, callback: Callback<JsonLdObj>): void;
-export function compact(input: JsonLdDocument, ctx?: ContextDefinition, options?: Options.Compact): Promise<JsonLdObj>;
+export function compact(
+  input: JsonLdDocument,
+  ctx: ContextDefinition,
+  callback: Callback<JsonLdObj>,
+): void;
+export function compact(
+  input: JsonLdDocument,
+  ctx?: ContextDefinition,
+  options?: Options.Compact,
+): Promise<JsonLdObj>;
 
-export function expand(input: JsonLdDocument, options: Options.Expand, callback: Callback<JsonLdArray>): void;
-export function expand(input: JsonLdDocument, callback: Callback<JsonLdArray>): void;
-export function expand(input: JsonLdDocument, options?: Options.Expand): Promise<JsonLdArray>;
+export function expand(
+  input: JsonLdDocument,
+  options: Options.Expand,
+  callback: Callback<JsonLdArray>,
+): void;
+export function expand(
+  input: JsonLdDocument,
+  callback: Callback<JsonLdArray>,
+): void;
+export function expand(
+  input: JsonLdDocument,
+  options?: Options.Expand,
+): Promise<JsonLdArray>;
 
 export function flatten(
-    input: JsonLdDocument,
-    ctx: ContextDefinition | null,
-    options: Options.Flatten,
-    callback: Callback<JsonLdObj>,
+  input: JsonLdDocument,
+  ctx: ContextDefinition | null,
+  options: Options.Flatten,
+  callback: Callback<JsonLdObj>,
 ): void;
-export function flatten(input: JsonLdDocument, ctx: ContextDefinition | null, callback: Callback<JsonLdObj>): void;
-export function flatten(input: JsonLdDocument, ctx?: ContextDefinition, options?: Options.Flatten): Promise<JsonLdObj>;
+export function flatten(
+  input: JsonLdDocument,
+  ctx: ContextDefinition | null,
+  callback: Callback<JsonLdObj>,
+): void;
+export function flatten(
+  input: JsonLdDocument,
+  ctx?: ContextDefinition,
+  options?: Options.Flatten,
+): Promise<JsonLdObj>;
 
-export function frame(input: JsonLdDocument, frame: Frame, options: Options.Frame, callback: Callback<JsonLdObj>): void;
-export function frame(input: JsonLdDocument, frame: Frame, callback: Callback<JsonLdObj>): void;
-export function frame(input: JsonLdDocument, frame: Frame, options?: Options.Frame): Promise<JsonLdObj>;
+export function frame(
+  input: JsonLdDocument,
+  frame: Frame,
+  options: Options.Frame,
+  callback: Callback<JsonLdObj>,
+): void;
+export function frame(
+  input: JsonLdDocument,
+  frame: Frame,
+  callback: Callback<JsonLdObj>,
+): void;
+export function frame(
+  input: JsonLdDocument,
+  frame: Frame,
+  options?: Options.Frame,
+): Promise<JsonLdObj>;
 
-export function normalize(input: JsonLdDocument, options: Options.Normalize, callback: Callback<string>): void;
-export function normalize(input: JsonLdDocument, callback: Callback<string>): void;
-export function normalize(input: JsonLdDocument, options?: Options.Normalize): Promise<string>;
+export function normalize(
+  input: JsonLdDocument,
+  options: Options.Normalize,
+  callback: Callback<string>,
+): void;
+export function normalize(
+  input: JsonLdDocument,
+  callback: Callback<string>,
+): void;
+export function normalize(
+  input: JsonLdDocument,
+  options?: Options.Normalize,
+): Promise<string>;
 
 export const canonize: typeof normalize;
 
-export function fromRDF(dataset: RdfDataSet, options: Options.FromRdf, callback: Callback<JsonLdArray>): void;
-export function fromRDF(dataset: RdfDataSet, callback: Callback<JsonLdArray>): void;
-export function fromRDF(dataset: RdfDataSet, options?: Options.FromRdf): Promise<JsonLdArray>;
+export function fromRDF(
+  dataset: RdfDataSet,
+  options: Options.FromRdf,
+  callback: Callback<JsonLdArray>,
+): void;
+export function fromRDF(
+  dataset: RdfDataSet,
+  callback: Callback<JsonLdArray>,
+): void;
+export function fromRDF(
+  dataset: RdfDataSet,
+  options?: Options.FromRdf,
+): Promise<JsonLdArray>;
 
-export function toRDF(input: JsonLdDocument, callback: Callback<RdfDataSet>): void;
-export function toRDF(input: JsonLdDocument, options: Options.ToRdf, callback: Callback<RdfDataSet>): void;
-export function toRDF(input: JsonLdDocument, options?: Options.ToRdf): Promise<RdfDataSet>;
+export function toRDF(
+  input: JsonLdDocument,
+  callback: Callback<RdfDataSet>,
+): void;
+export function toRDF(
+  input: JsonLdDocument,
+  options: Options.ToRdf,
+  callback: Callback<RdfDataSet>,
+): void;
+export function toRDF(
+  input: JsonLdDocument,
+  options?: Options.ToRdf,
+): Promise<RdfDataSet>;
 
 export let JsonLdProcessor: JsonLdProcessorInterface;
 

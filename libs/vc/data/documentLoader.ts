@@ -1,7 +1,7 @@
-import * as jsonld from "jsonld";
+// import * as jsonld from "jsonld";
 import { JsonLd, RemoteDocument, Url } from "jsonld/jsonld-spec";
 
-const remoteDocumentLoader = jsonld.documentLoaders.xhr();
+// const remoteDocumentLoader = jsonld.documentLoaders.xhr();
 
 export const customDocumentLoader =
   (documents: Map<Url, JsonLd>, allowFetch?: boolean) =>
@@ -16,7 +16,8 @@ export const customDocumentLoader =
     }
 
     if (allowFetch === true) {
-      return await remoteDocumentLoader(url);
+      // return await remoteDocumentLoader(url);
+      throw new Error(`allowFetch is not implemented yet.`);
     }
 
     throw new Error(

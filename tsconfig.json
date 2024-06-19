@@ -18,9 +18,10 @@
       }
     ],
     "paths": {
-      "@/*": ["./app/*"]
+      "@/*": ["./*"]
     },
-    "downlevelIteration": true
+    "downlevelIteration": true,
+    "typeRoots": ["./@types", "./node_modules/@types"]
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
   "exclude": ["node_modules"]

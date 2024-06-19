@@ -1,10 +1,11 @@
+import { Result } from "@/types/result";
 import {
   VC,
   blindSign,
   requestBlindSign,
   verifyBlindSignRequest,
 } from "@zkp-ld/jsonld-proofs";
-import { Result } from "../../../types/result";
+import { documentLoader } from "./documentLoader";
 
 // TODO: ここのChallengeは毎回ランダムに生成しないといけないが、デモの簡単のために固定値を使っている
 const ISSUER_CHALLENGE = "issuerChallenge";
@@ -23,13 +24,16 @@ export const generateHolderSecretCommitment = async (holderSecret: string) => {
 };
 
 type GenerateBlindSignVCProps = {
+  doc: string;
+  keyPairs: string;
   commitment: string;
   pokForCommitment: string;
   documentLoader: any;
-  keyPairs: any;
 };
 
 export const generateBlindSignVC = async ({
+  doc,
+  keyPairs,
   commitment,
   pokForCommitment,
 }: GenerateBlindSignVCProps): Promise<Result<VC>> => {
@@ -46,8 +50,8 @@ export const generateBlindSignVC = async ({
   } else {
     const vc = await blindSign(
       commitment,
-      JSON.parse(doc),
-      JSON.parse(keyPairs),
+      JSON.parse(JSON.parse(doc)),
+      JSON.parse(JSON.parse(keyPairs)),
       documentLoader,
     );
     return { ok: true, value: vc };

@@ -1,37 +1,37 @@
+import { RedisDB } from "@/libs/redis";
 import { AuthenticatorDevice } from "@simplewebauthn/types";
 import { randomUUID } from "node:crypto";
 
 type UserId = string;
 
 type User = {
-  id: UserId;
+  id: string;
   email: string;
-  devices: AuthenticatorDevice[];
-  currentChallenge?: string;
+  device: AuthenticatorDevice;
 };
 
-let users: Record<UserId, User> = {};
-
-export const getUser = (userId: UserId): User | undefined => {
-  return users[userId];
+export const getUser = async (userId: UserId) => {
+  const user = await RedisDB.Instance.get<User>("user", userId);
+  if (!user) {
+    return undefined;
+  }
+  return user;
 };
 
 export const saveUser = (user: User): void => {
-  users[user.id] = user;
-};
-const createUserId = async (): Promise<UserId> => {
-  return "example-user-id";
-  return randomUUID();
+  RedisDB.Instance.set("user", user.id, user);
 };
 
-export const createUser = async (email: string): Promise<User> => {
-  const id = await createUserId();
-  const user: User = {
+export const createUser = (
+  id: UserId,
+  email: string,
+  device: AuthenticatorDevice,
+): User => {
+  return {
     id,
     email,
-    devices: [],
+    device,
   };
-  return user;
 };
 
 type Session = {
@@ -39,5 +39,5 @@ type Session = {
 };
 
 export const getSession = (): Session => {
-  return { id: "example-user-id" };
+  return { id: "example-session-id" };
 };

@@ -40,11 +40,7 @@ export const AddCredentialDrawerContent = () => {
 
       <DrawerFooter>
         {issuerId && <Button className="w-full">受け取り</Button>}
-        <DrawerClose>
-          <Button variant="outline" className="w-full">
-            キャンセル
-          </Button>
-        </DrawerClose>
+        <DrawerClose className="w-full">キャンセル</DrawerClose>
       </DrawerFooter>
     </DrawerContent>
   );

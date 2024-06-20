@@ -1,5 +1,5 @@
-import { AddCredentialButton } from "./components/AddCredential/Button";
-import { MyNumberCard } from "./components/CredentialsCard";
+import { AddCredentialButton } from "../components/AddCredential/Button";
+import { MyNumberCard } from "../components/CredentialsCard";
 
 export default () => {
   return (
@@ -14,6 +14,8 @@ export default () => {
           address="東京都渋谷区渋谷1-2-3"
           birthdate="1990-01-01"
           gender="男性"
+          // TODO: Fix this link
+          link="/wallet/credentials/1"
         />
         <AddCredentialButton
           onClick={() => {

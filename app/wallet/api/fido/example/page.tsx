@@ -7,7 +7,7 @@ import {
 
 export default () => {
   const handleRegistration = async () => {
-    const response = await fetch("/api/fido/register");
+    const response = await fetch("/wallet/api/fido/register");
 
     let registrationResponse;
     try {
@@ -19,7 +19,7 @@ export default () => {
       throw error;
     }
 
-    const verificationResponse = await fetch("/api/fido/register", {
+    const verificationResponse = await fetch("/wallet/api/fido/register", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -36,7 +36,7 @@ export default () => {
   };
 
   const handleAuthentication = async () => {
-    const response = await fetch("/api/fido/authenticate");
+    const response = await fetch("/wallet/api/fido/authenticate");
 
     let authenticationResponse;
     try {
@@ -48,7 +48,7 @@ export default () => {
       throw error;
     }
 
-    const verificationResponse = await fetch("/api/fido/authenticate", {
+    const verificationResponse = await fetch("/wallet/api/fido/authenticate", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

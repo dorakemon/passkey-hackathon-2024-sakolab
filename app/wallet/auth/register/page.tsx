@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 
 import {
@@ -9,8 +11,10 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { KeyRound } from "lucide-react";
+import { useFidoClientHandler } from "../hooks/useFidoClientHandler";
 
 export default () => {
+  const { handleRegistration } = useFidoClientHandler();
   return (
     <main className="flex flex-col items-center justify-center min-h-screen py-2 mx-10">
       <header className="w-full max-w-md mt-12 space-y-3 flex flex-col">
@@ -22,11 +26,12 @@ export default () => {
         <CardHeader>
           <CardTitle>ユーザーネーム</CardTitle>
         </CardHeader>
-        <form>
+        <form action={handleRegistration}>
           <CardContent>
             <Input
               placeholder="メールアドレス"
               type="email"
+              name="email"
               required
               className="h-12"
             />

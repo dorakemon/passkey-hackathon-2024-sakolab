@@ -1,41 +1,11 @@
 import { NextRequest } from "next/server";
-import { getSession, getUser } from "../user";
+import { getSession, getUser } from "../../user";
 import {
-  GenerateAuthenticationOptionsOpts,
   VerifiedAuthenticationResponse,
   VerifyAuthenticationResponseOpts,
-  generateAuthenticationOptions,
   verifyAuthenticationResponse,
 } from "@simplewebauthn/server";
-import { timeout, rpID, expectedOrigin } from "../constant";
-
-export async function GET(request: NextRequest) {
-  const session = getSession();
-  if (!session) {
-    return new Response("Unauthorized", { status: 401 });
-  }
-
-  const user = getUser(session.id);
-  if (!user) {
-    return new Response("Unauthorized", { status: 401 });
-  }
-
-  const opts: GenerateAuthenticationOptionsOpts = {
-    timeout,
-    userVerification: "preferred",
-    rpID,
-  };
-
-  const options = await generateAuthenticationOptions(opts);
-
-  user.currentChallenge = options.challenge;
-
-  return new Response(JSON.stringify(options), {
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-}
+import { rpID, expectedOrigin } from "../../constant";
 
 export async function POST(request: NextRequest) {
   const session = getSession();
@@ -47,7 +17,6 @@ export async function POST(request: NextRequest) {
   if (!user) {
     return new Response("Unauthorized", { status: 401 });
   }
-
   const response = await request.json();
   const expectedChallenge = user.currentChallenge;
   if (!expectedChallenge) {
@@ -97,7 +66,6 @@ export async function POST(request: NextRequest) {
   }
 
   user.currentChallenge = undefined;
-
   return new Response(JSON.stringify({ verified }), {
     headers: {
       "Content-Type": "application/json",

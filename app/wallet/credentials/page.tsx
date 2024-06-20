@@ -5,8 +5,8 @@ export default () => {
   return (
     <main className="flex flex-col items-center justify-center min-h-screen py-2 mx-10">
       <header className="w-full max-w-md mt-12 space-y-3 flex flex-col">
-        <h1 className="text-3xl font-bold">クレデンシャル</h1>
-        <p className="text-gray-300">クレデンシャルをタップして提示します</p>
+        <h1 className="text-3xl font-bold">証明書一覧</h1>
+        <p className="text-gray-300">証明書をタップして提示します</p>
       </header>
       <div className="flex-grow mt-6 flex flex-col gap-6">
         <MyNumberCard

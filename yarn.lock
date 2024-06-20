@@ -292,7 +292,7 @@
   resolved "https://registry.yarnpkg.com/@radix-ui/react-context/-/react-context-1.1.0.tgz#6df8d983546cfd1999c8512f3a8ad85a6e7fcee8"
   integrity sha512-OKrckBy+sMEgYM/sMmqmErVn0kZqrHPJze+Ql3DzYsDDp0hl0L62nx/2122/Bvps1qz645jlcu2tD9lrRSdf8A==
 
-"@radix-ui/react-dialog@^1.1.0":
+"@radix-ui/react-dialog@^1.0.4", "@radix-ui/react-dialog@^1.1.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@radix-ui/react-dialog/-/react-dialog-1.1.0.tgz#9d354a8c7f534d49fffd2544fb7b371cb49da71c"
   integrity sha512-oiSJcsjbdC8JqbXrOuhOd7oaEaPp3x2L2zn6V7ie6SSpEjrAha/WabDX4po6laGwbhAu9DT0XxHL0DmcIXrR0A==
@@ -3457,6 +3457,13 @@ uuid@^10.0.0:
   version "10.0.0"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-10.0.0.tgz#5a95aa454e6e002725c79055fd42aaba30ca6294"
   integrity sha512-8XkAphELsDnEGrDxUOHB3RGvXz6TeuYSGEZBOjtTtPm2lwhGBjLgOzLHB63IUWfBpNucQjND6d3AOudO+H3RWQ==
+
+vaul@^0.9.1:
+  version "0.9.1"
+  resolved "https://registry.yarnpkg.com/vaul/-/vaul-0.9.1.tgz#3640198e04636b209b1f907fcf3079bec6ecc66b"
+  integrity sha512-fAhd7i4RNMinx+WEm6pF3nOl78DFkAazcN04ElLPFF9BMCNGbY/kou8UMhIcicm0rJCNePJP0Yyza60gGOD0Jw==
+  dependencies:
+    "@radix-ui/react-dialog" "^1.0.4"
 
 web-streams-polyfill@^3.0.3:
   version "3.3.3"

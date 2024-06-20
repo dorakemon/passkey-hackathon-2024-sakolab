@@ -11,10 +11,10 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { KeyRound } from "lucide-react";
-import { useFidoClientHandler } from "../hooks/useFidoClientHandler";
+import { useFidoClient } from "../hooks/useFidoClient";
 
 export default () => {
-  const { handleRegistration } = useFidoClientHandler();
+  const { handleRegistration } = useFidoClient();
   return (
     <main className="flex flex-col items-center justify-center min-h-screen py-2 mx-10">
       <header className="w-full max-w-md mt-12 space-y-3 flex flex-col">

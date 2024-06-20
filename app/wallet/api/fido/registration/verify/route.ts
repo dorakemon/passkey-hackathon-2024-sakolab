@@ -1,28 +1,32 @@
-import { NextRequest } from "next/server";
-import { createUser, getSession, getUser, saveUser } from "../../user";
 import { verifyRegistrationResponse } from "@simplewebauthn/server";
 import {
   AuthenticatorDevice,
   RegistrationResponseJSON,
 } from "@simplewebauthn/types";
-import { expectedOrigin, rpID, rpName } from "../../constant";
-import { RedisDB } from "@/libs/redis";
+import { NextRequest } from "next/server";
+import { SESSION_COOKIE_NAME, expectedOrigin, rpID } from "../../constant";
+import { deleteSession, getSession } from "../../session";
+import { createUser, saveUser } from "../../user";
 
 export async function POST(request: NextRequest) {
-  const session = getSession();
-  if (!session) {
-    return new Response("Unauthorized", { status: 401 });
+  const sessionId = request.cookies.get(SESSION_COOKIE_NAME)?.value;
+  if (!sessionId) {
+    return new Response("Unauthorized - sessionId is not found", {
+      status: 401,
+    });
   }
 
-  const sessionData = await RedisDB.Instance.get<string>(
-    "registration",
-    session.id,
-  );
+  const sessionData = await getSession(sessionId);
   if (!sessionData) {
     return new Response("Unauthorized", { status: 401 });
   }
 
-  const { email, challenge, userID } = JSON.parse(sessionData);
+  const { email, challenge, userID } = sessionData;
+  if (!email || !challenge || !userID) {
+    return new Response("Unauthorized - sessionData may be lost", {
+      status: 401,
+    });
+  }
 
   const response: RegistrationResponseJSON = await request.json();
 
@@ -67,7 +71,7 @@ export async function POST(request: NextRequest) {
     saveUser(user);
   }
 
-  RedisDB.Instance.set("registration", session.id, undefined);
+  deleteSession(sessionId);
 
   return new Response(JSON.stringify({ verified }), {
     headers: {

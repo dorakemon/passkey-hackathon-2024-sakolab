@@ -1,17 +1,13 @@
-import { NextRequest } from "next/server";
-import { getSession, getUser } from "../../user";
 import {
   GenerateAuthenticationOptionsOpts,
   generateAuthenticationOptions,
 } from "@simplewebauthn/server";
-import { timeout, rpID } from "../../constant";
-import { RedisDB } from "@/libs/redis";
+import { NextRequest } from "next/server";
+import { rpID, timeout } from "../../constant";
+import { createSessionId, setSession } from "../../session";
 
 export async function GET(request: NextRequest) {
-  const session = getSession();
-  if (!session) {
-    return new Response("Unauthorized", { status: 401 });
-  }
+  const sessionId = createSessionId();
 
   const opts: GenerateAuthenticationOptionsOpts = {
     timeout,
@@ -21,11 +17,18 @@ export async function GET(request: NextRequest) {
 
   const options = await generateAuthenticationOptions(opts);
 
-  RedisDB.Instance.set("authentication", session.id, options.challenge);
+  setSession(sessionId, {
+    challenge: options.challenge,
+  });
 
-  return new Response(JSON.stringify(options), {
+  let response = new Response(JSON.stringify(options), {
     headers: {
       "Content-Type": "application/json",
     },
   });
+  response.headers.set(
+    "Set-Cookie",
+    `wallet-session=${sessionId}; Path=/wallet`,
+  );
+  return response;
 }

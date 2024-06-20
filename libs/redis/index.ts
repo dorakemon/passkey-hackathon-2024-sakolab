@@ -30,4 +30,9 @@ export class RedisDB {
     const redisKey = `${servicePrefix}:${key}`;
     return RedisDB._redisDB.get<TData>(redisKey);
   }
+
+  public delete(servicePrefix: string, key: string) {
+    const redisKey = `${servicePrefix}:${key}`;
+    return RedisDB._redisDB.del(redisKey);
+  }
 }

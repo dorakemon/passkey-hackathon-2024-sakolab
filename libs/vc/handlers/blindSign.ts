@@ -3,6 +3,7 @@ import {
   VC,
   blindSign,
   requestBlindSign,
+  unblind,
   verifyBlindSignRequest,
 } from "@zkp-ld/jsonld-proofs";
 import { documentLoader } from "./documentLoader";
@@ -12,10 +13,9 @@ const ISSUER_CHALLENGE = "issuerChallenge";
 
 export const generateHolderSecretCommitment = async (holderSecret: string) => {
   const secret = new Uint8Array(Buffer.from(holderSecret));
-  const issuerChallenge = undefined;
   const { commitment, blinding, pokForCommitment } = await requestBlindSign(
     secret,
-    issuerChallenge,
+    ISSUER_CHALLENGE,
   );
   if (pokForCommitment === undefined) {
     throw Error;
@@ -56,4 +56,8 @@ export const generateBlindSignVC = async ({
     );
     return { ok: true, value: vc };
   }
+};
+
+export const unblindVC = async (vc: VC, blinding: string): Promise<VC> => {
+  return unblind(vc, blinding, documentLoader);
 };

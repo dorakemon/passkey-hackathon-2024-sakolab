@@ -13,10 +13,14 @@ export const MyNumberCard = ({
   gender,
   link,
 }: CredentialsCardProps) => {
+  const gradient =
+    gender === "男性"
+      ? "linear-gradient(135deg, #1e3a8a, #666)"
+      : "linear-gradient(135deg, #8a1e3a, #666)";
   return (
     <a
       className="w-[286px] rounded-lg shadow-lg p-6 text-white"
-      style={{ background: "linear-gradient(135deg, #1e3a8a, #666)" }}
+      style={{ background: gradient }}
       href={`/wallet/credentials/${link}`}
     >
       <div className="mb-10">

@@ -4,7 +4,7 @@ const initMynumberDoc = {
     "https://www.w3.org/ns/data-integrity/v1",
     "https://schema.org/",
   ],
-  id: "mynumber-1",
+  id: "https://example.com/mynumber/1",
   type: "VerifiableCredential",
   issuer: "did:example:issuer1",
   issuanceDate: "2023-01-01T00:00:00Z",
@@ -40,7 +40,7 @@ export const generateMynumberDoc = ({
 
   const doc: typeof initMynumberDoc = {
     ...initMynumberDoc,
-    id: `mynumber-${randomMynumberID}`,
+    id: `https://example.com/mynumber/${randomMynumberID}`,
     issuanceDate: `${new Date().toISOString()}`,
     expirationDate: `${new Date(
       new Date().setFullYear(new Date().getFullYear() + 3),

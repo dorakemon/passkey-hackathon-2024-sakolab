@@ -5,6 +5,8 @@ const servicePrefix = "wallet-credentials";
 type VC = object;
 type UserCredentialsStore = VC[];
 
+//  TODO: MUST: 永続化　eternalを入れる
+
 export const appendOrCreateUserVC = async (userID: string, vc: VC) => {
   let userVCs = await RedisDB.Instance.get<UserCredentialsStore>(
     servicePrefix,

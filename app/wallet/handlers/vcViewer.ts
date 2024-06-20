@@ -7,8 +7,12 @@ export const vcToBase4AttributesAndId = (
   birthdate: string;
   gender: string;
 } => {
+  const vcId = vc.id;
+  const vcIdPaths = vcId.split("/");
+  const viewId = `${vcIdPaths[vcIdPaths.length - 2]}-${vcIdPaths[vcIdPaths.length - 1]}`;
+
   return {
-    id: vc.id,
+    id: viewId,
     name: vc.credentialSubject.name,
     address: vc.credentialSubject.address,
     birthdate: vc.credentialSubject.birthdate,
@@ -16,6 +20,10 @@ export const vcToBase4AttributesAndId = (
   };
 };
 
-export const getVCFromVCId = (vcs: any[], vcId: string) => {
-  return vcs.findLast((vc) => vc.id === vcId);
+export const getVCFromVCId = (vcs: any[], viewId: string) => {
+  return vcs.find((vc) => {
+    const vcIdPaths = vc.id.split("/");
+    const vcViewId = `${vcIdPaths[vcIdPaths.length - 2]}-${vcIdPaths[vcIdPaths.length - 1]}`;
+    return vcViewId === viewId;
+  });
 };

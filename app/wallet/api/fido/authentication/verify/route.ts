@@ -1,24 +1,28 @@
-import { NextRequest } from "next/server";
-import { getSession, getUser } from "../../user";
 import {
   VerifiedAuthenticationResponse,
   VerifyAuthenticationResponseOpts,
   verifyAuthenticationResponse,
 } from "@simplewebauthn/server";
-import { rpID, expectedOrigin } from "../../constant";
 import { AuthenticationResponseJSON } from "@simplewebauthn/types";
-import { RedisDB } from "@/libs/redis";
+import { NextRequest } from "next/server";
+import { expectedOrigin, rpID } from "../../constant";
+import { deleteSession, getSession } from "../../session";
+import { getUser } from "../../user";
 
 export async function POST(request: NextRequest) {
-  const session = getSession();
-  if (!session) {
-    return new Response("Unauthorized", { status: 401 });
+  const sessionId = request.cookies.get("wallet-session")?.value;
+  if (!sessionId) {
+    return new Response("Unauthorized - sessionId is not found", {
+      status: 401,
+    });
   }
 
-  const expectedChallenge = await RedisDB.Instance.get<string>(
-    "authentication",
-    session.id,
-  );
+  const session = await getSession(sessionId);
+  if (!session) {
+    return new Response("Unauthorized - session was expired", { status: 401 });
+  }
+
+  const expectedChallenge = session.challenge;
   if (!expectedChallenge) {
     return new Response("Something error happened", { status: 401 });
   }
@@ -53,6 +57,7 @@ export async function POST(request: NextRequest) {
       authenticator: dbAuthenticator,
       requireUserVerification: true,
     };
+    console.log(opts);
     verification = await verifyAuthenticationResponse(opts);
   } catch (error) {
     console.error(error);
@@ -69,7 +74,9 @@ export async function POST(request: NextRequest) {
     dbAuthenticator.counter = authenticationInfo.newCounter;
   }
 
-  RedisDB.Instance.set("authentication", session.id, undefined);
+  // RedisDB.Instance.set("authentication", session.id, undefined);
+  deleteSession(sessionId);
+
   return new Response(JSON.stringify({ verified }), {
     headers: {
       "Content-Type": "application/json",

@@ -1,11 +1,10 @@
-import { NextRequest, NextResponse } from "next/server";
-import { createUser, getSession, getUser, saveUser } from "../../user";
 import {
   GenerateRegistrationOptionsOpts,
   generateRegistrationOptions,
 } from "@simplewebauthn/server";
-import { rpID, rpName } from "../../constant";
-import { RedisDB } from "@/libs/redis";
+import { NextRequest, NextResponse } from "next/server";
+import { SESSION_COOKIE_NAME, rpID, rpName } from "../../constant";
+import { createSessionId, setSession } from "../../session";
 import { RegistrationInfo } from "../type";
 
 export async function POST(req: NextRequest) {
@@ -30,15 +29,16 @@ export async function POST(req: NextRequest) {
   };
 
   const registrationOptions = await generateRegistrationOptions(opts);
-  const session = getSession();
+  const sessionId = createSessionId();
 
   const obj: RegistrationInfo = {
     email,
     challenge: registrationOptions.challenge,
     userID: registrationOptions.user.id,
   };
+  setSession(sessionId, obj);
 
-  RedisDB.Instance.set("registration", session.id, obj);
-
-  return NextResponse.json(registrationOptions);
+  let response = NextResponse.json(registrationOptions);
+  response.cookies.set(SESSION_COOKIE_NAME, sessionId);
+  return response;
 }

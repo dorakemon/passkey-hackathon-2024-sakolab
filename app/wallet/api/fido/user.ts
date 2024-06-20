@@ -1,6 +1,5 @@
 import { RedisDB } from "@/libs/redis";
 import { AuthenticatorDevice } from "@simplewebauthn/types";
-import { randomUUID } from "node:crypto";
 
 type UserId = string;
 
@@ -32,12 +31,4 @@ export const createUser = (
     email,
     device,
   };
-};
-
-type Session = {
-  id: string;
-};
-
-export const getSession = (): Session => {
-  return { id: "example-session-id" };
 };

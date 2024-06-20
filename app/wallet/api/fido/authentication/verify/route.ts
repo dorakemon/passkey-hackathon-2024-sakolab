@@ -54,7 +54,13 @@ export async function POST(request: NextRequest) {
       expectedChallenge,
       expectedOrigin,
       expectedRPID: rpID,
-      authenticator: dbAuthenticator,
+      authenticator: {
+        ...dbAuthenticator,
+        credentialID: dbAuthenticator.credentialID,
+        credentialPublicKey: new Uint8Array(
+          (dbAuthenticator.credentialPublicKey as any).data,
+        ),
+      },
       requireUserVerification: true,
     };
     console.log(opts);

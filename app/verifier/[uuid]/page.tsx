@@ -22,6 +22,11 @@ export default async ({ params }: { params: { uuid: string } }) => {
 
   await getRedisKey(params.uuid);
 
+  const qrValue = {
+    verifyChallenge: params.uuid,
+    requestAttributes: ["address", "gender"],
+  };
+
   return (
     <div className="relative h-screen w-screen">
       <img
@@ -37,7 +42,11 @@ export default async ({ params }: { params: { uuid: string } }) => {
               スマートフォンのカメラでQRコードをスキャンするだけで、簡単にログインできます。
             </p>
             <div className="bg-gray-100 p-4 rounded-md mb-6">
-              <QRCode value={params.uuid} width={200} height={200} />
+              <QRCode
+                value={JSON.stringify(qrValue)}
+                width={200}
+                height={200}
+              />
             </div>
             <p className="text-gray-700 mb-4 text-center">
               カメラでQRコードをスキャンしてください。

@@ -3,12 +3,11 @@ import { VC, sign } from "@zkp-ld/jsonld-proofs";
 import { DocumentLoader } from "@zkp-ld/jsonld-proofs/lib/types";
 
 export const generateVC = async (
-  doc: string,
+  doc: VC,
   keyPairs: string,
   documentLoader: DocumentLoader,
 ): Promise<Result<VC>> => {
-  const docJSON = JSON.parse(doc);
   const keyPairsJSON = JSON.parse(keyPairs);
-  const vcSigned = await sign(docJSON, keyPairsJSON, documentLoader);
+  const vcSigned = await sign(doc, keyPairsJSON, documentLoader);
   return { ok: true, value: vcSigned };
 };

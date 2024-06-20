@@ -1,8 +1,5 @@
 import { verifyRegistrationResponse } from "@simplewebauthn/server";
-import {
-  AuthenticatorDevice,
-  RegistrationResponseJSON,
-} from "@simplewebauthn/types";
+import { RegistrationResponseJSON } from "@simplewebauthn/types";
 import { NextRequest } from "next/server";
 import { SESSION_COOKIE_NAME, expectedOrigin, rpID } from "../../constant";
 import { deleteSession, getSession } from "../../session";
@@ -59,8 +56,8 @@ export async function POST(request: NextRequest) {
 
   if (verified && registrationInfo) {
     const { credentialPublicKey, credentialID, counter } = registrationInfo;
-    const newDevice: AuthenticatorDevice = {
-      credentialPublicKey,
+    const newDevice = {
+      credentialPublicKey: Buffer.from(credentialPublicKey),
       credentialID,
       counter,
       transports: response.response.transports,

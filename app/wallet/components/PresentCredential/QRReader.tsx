@@ -5,22 +5,26 @@ import { useState } from "react";
 import { useZxing } from "react-zxing";
 
 type PresentCredentialQRReaderProps = {
-  onScanUUID: (uuid: string) => void;
+  onScanVerifierQr: (
+    verifierChallenge: string,
+    requestAttributes: string[],
+  ) => void;
 };
 
 export const PresentCredentialQRReader = ({
-  onScanUUID,
+  onScanVerifierQr,
 }: PresentCredentialQRReaderProps) => {
   const [error, setError] = useState("");
 
   const { ref } = useZxing({
     onDecodeResult(result) {
       const text = result.getText();
-      if (!isValidUUID(text)) {
+      const qrData = JSON.parse(text);
+      if (!isValidUUID(qrData.verifyChallenge)) {
         setError(`QRが無効です - ${text}`);
         return;
       }
-      onScanUUID(text);
+      onScanVerifierQr(qrData.verifyChallenge, qrData.requestAttributes);
     },
   });
 

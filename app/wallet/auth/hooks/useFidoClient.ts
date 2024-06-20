@@ -2,6 +2,7 @@ import {
   startAuthentication,
   startRegistration,
 } from "@simplewebauthn/browser";
+import { redirect } from "next/navigation";
 
 export const useFidoClient = () => {
   const handleRegistration = async (formData: FormData) => {
@@ -44,6 +45,7 @@ export const useFidoClient = () => {
     const verificationJSON = await verificationResponse.json();
     if (verificationJSON && verificationJSON.verified) {
       alert("Registration successful");
+      redirect("/wallet/credentials");
     } else {
       alert("Registration failed");
     }
@@ -76,6 +78,7 @@ export const useFidoClient = () => {
     const verificationJSON = await verificationResponse.json();
     if (verificationJSON && verificationJSON.verified) {
       alert("Authentication successful");
+      redirect("/wallet/credentials");
     } else {
       alert("Authentication failed");
     }

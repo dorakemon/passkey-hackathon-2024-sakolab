@@ -14,11 +14,18 @@ import { PresentCredentialInfoTable } from "./InfoTable";
 import { PresentCredentialQRReader } from "./QRReader";
 
 export const PresentCredentialDrawerContent = () => {
-  const [verifierId, setVerifierId] = useState("");
+  const [verifierChallenge, setVerifierChallenge] = useState("");
+  const [requestAttributes, setRequestAttributes] = useState<string[]>([]);
 
-  const handleScan = (_verifierId: string) => {
-    setVerifierId(_verifierId);
+  const handleScan = (
+    verifierChallenge: string,
+    requestAttributes: string[],
+  ) => {
+    setVerifierChallenge(verifierChallenge);
+    setRequestAttributes(requestAttributes);
   };
+
+  const handlePresentVerifiablePresentation = () => {};
 
   return (
     <DrawerContent>
@@ -29,17 +36,25 @@ export const PresentCredentialDrawerContent = () => {
         </DrawerDescription>
       </DrawerHeader>
 
-      {!verifierId ? (
-        <PresentCredentialQRReader onScanUUID={handleScan} />
+      {!verifierChallenge ? (
+        <PresentCredentialQRReader onScanVerifierQr={handleScan} />
       ) : (
         <PresentCredentialInfoTable
-          issueId={verifierId}
+          verifierChallenge={verifierChallenge}
           issuerDomain="https://example.com"
+          requestAttributes={requestAttributes}
         />
       )}
 
       <DrawerFooter>
-        {verifierId && <Button className="w-full">提示</Button>}
+        {verifierChallenge && (
+          <Button
+            onClick={handlePresentVerifiablePresentation}
+            className="w-full"
+          >
+            提示
+          </Button>
+        )}
         <DrawerClose className="w-full">キャンセル</DrawerClose>
       </DrawerFooter>
     </DrawerContent>

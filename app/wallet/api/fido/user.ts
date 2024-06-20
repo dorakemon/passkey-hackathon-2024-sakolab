@@ -1,10 +1,10 @@
 import { AuthenticatorDevice } from "@simplewebauthn/types";
+import { randomUUID } from "node:crypto";
 
 type UserId = string;
 
 type User = {
   id: UserId;
-  username: string;
   email: string;
   devices: AuthenticatorDevice[];
   currentChallenge?: string;
@@ -18,6 +18,20 @@ export const getUser = (userId: UserId): User | undefined => {
 
 export const saveUser = (user: User): void => {
   users[user.id] = user;
+};
+const createUserId = async (): Promise<UserId> => {
+  return "example-user-id";
+  return randomUUID();
+};
+
+export const createUser = async (email: string): Promise<User> => {
+  const id = await createUserId();
+  const user: User = {
+    id,
+    email,
+    devices: [],
+  };
+  return user;
 };
 
 type Session = {

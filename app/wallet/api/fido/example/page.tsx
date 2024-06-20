@@ -7,7 +7,17 @@ import {
 
 export default () => {
   const handleRegistration = async () => {
-    const response = await fetch("/wallet/api/fido/register");
+    const email = document.getElementById("email") as HTMLInputElement;
+    if (!email) {
+      return;
+    }
+    const response = await fetch("/wallet/api/fido/registration/generate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email: email.value }),
+    });
 
     let registrationResponse;
     try {
@@ -19,13 +29,16 @@ export default () => {
       throw error;
     }
 
-    const verificationResponse = await fetch("/wallet/api/fido/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
+    const verificationResponse = await fetch(
+      "/wallet/api/fido/registration/verify",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(registrationResponse),
       },
-      body: JSON.stringify(registrationResponse),
-    });
+    );
 
     const verificationJSON = await verificationResponse.json();
     if (verificationJSON && verificationJSON.verified) {
@@ -36,7 +49,7 @@ export default () => {
   };
 
   const handleAuthentication = async () => {
-    const response = await fetch("/wallet/api/fido/authenticate");
+    const response = await fetch("/wallet/api/fido/authentication/generate");
 
     let authenticationResponse;
     try {
@@ -48,13 +61,16 @@ export default () => {
       throw error;
     }
 
-    const verificationResponse = await fetch("/wallet/api/fido/authenticate", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
+    const verificationResponse = await fetch(
+      "/wallet/api/fido/authentication/verify",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(authenticationResponse),
       },
-      body: JSON.stringify(authenticationResponse),
-    });
+    );
 
     const verificationJSON = await verificationResponse.json();
     if (verificationJSON && verificationJSON.verified) {
@@ -69,6 +85,7 @@ export default () => {
       <div>This is Wallet Home</div>
 
       <section>
+        <input type="email" placeholder="Email" id="email" />
         <button id="registration" onClick={handleRegistration}>
           Register
         </button>

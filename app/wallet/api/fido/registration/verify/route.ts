@@ -1,11 +1,12 @@
 import { NextRequest } from "next/server";
-import { getSession, getUser } from "../../user";
+import { createUser, getSession, getUser, saveUser } from "../../user";
 import { verifyRegistrationResponse } from "@simplewebauthn/server";
 import {
   AuthenticatorDevice,
   RegistrationResponseJSON,
 } from "@simplewebauthn/types";
 import { expectedOrigin, rpID, rpName } from "../../constant";
+import { RedisDB } from "@/libs/redis";
 
 export async function POST(request: NextRequest) {
   const session = getSession();
@@ -13,14 +14,19 @@ export async function POST(request: NextRequest) {
     return new Response("Unauthorized", { status: 401 });
   }
 
-  const user = getUser(session.id);
-  if (!user) {
+  const sessionData = await RedisDB.Instance.get<string>(
+    "registration",
+    session.id,
+  );
+  if (!sessionData) {
     return new Response("Unauthorized", { status: 401 });
   }
 
-  const response: RegistrationResponseJSON = await request.json();
-  const expectedChallenge = user.currentChallenge;
+  const { email, challenge, userID } = JSON.parse(sessionData);
 
+  const response: RegistrationResponseJSON = await request.json();
+
+  const expectedChallenge = challenge;
   let verification;
   try {
     if (expectedChallenge)
@@ -49,23 +55,19 @@ export async function POST(request: NextRequest) {
 
   if (verified && registrationInfo) {
     const { credentialPublicKey, credentialID, counter } = registrationInfo;
+    const newDevice: AuthenticatorDevice = {
+      credentialPublicKey,
+      credentialID,
+      counter,
+      transports: response.response.transports,
+    };
 
-    const existingDevice = user.devices.find(
-      (device) => device.credentialID === credentialID,
-    );
+    const user = createUser(userID, email, newDevice);
 
-    if (!existingDevice) {
-      const newDevice: AuthenticatorDevice = {
-        credentialPublicKey,
-        credentialID,
-        counter,
-        transports: response.response.transports,
-      };
-      user.devices.push(newDevice);
-    }
+    saveUser(user);
   }
 
-  user.currentChallenge = undefined;
+  RedisDB.Instance.set("registration", session.id, undefined);
 
   return new Response(JSON.stringify({ verified }), {
     headers: {

@@ -5,15 +5,11 @@ import {
   generateAuthenticationOptions,
 } from "@simplewebauthn/server";
 import { timeout, rpID } from "../../constant";
+import { RedisDB } from "@/libs/redis";
 
 export async function GET(request: NextRequest) {
   const session = getSession();
   if (!session) {
-    return new Response("Unauthorized", { status: 401 });
-  }
-
-  const user = getUser(session.id);
-  if (!user) {
     return new Response("Unauthorized", { status: 401 });
   }
 
@@ -25,7 +21,7 @@ export async function GET(request: NextRequest) {
 
   const options = await generateAuthenticationOptions(opts);
 
-  user.currentChallenge = options.challenge;
+  RedisDB.Instance.set("authentication", session.id, options.challenge);
 
   return new Response(JSON.stringify(options), {
     headers: {

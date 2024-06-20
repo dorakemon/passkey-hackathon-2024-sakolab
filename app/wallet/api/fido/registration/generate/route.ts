@@ -1,31 +1,23 @@
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { createUser, getSession, getUser, saveUser } from "../../user";
 import {
   GenerateRegistrationOptionsOpts,
   generateRegistrationOptions,
 } from "@simplewebauthn/server";
 import { rpID, rpName } from "../../constant";
+import { RedisDB } from "@/libs/redis";
+import { RegistrationInfo } from "../type";
 
-export async function POST(request: NextRequest) {
-  const req = await request.json();
-  const { email } = req;
+export async function POST(req: NextRequest) {
+  const { email } = await req.json();
   if (!email) {
     return new Response("Email is required", { status: 400 });
   }
 
-  const newUser = await createUser(email);
-
-  const session = getSession();
-  if (!session) {
-    //ここでsessionがない場合は、401エラーを返す？のか？
-    return new Response("Unauthorized", { status: 401 });
-  }
-  session.id = newUser.id;
-
   const opts: GenerateRegistrationOptionsOpts = {
     rpName,
     rpID,
-    userName: newUser.email,
+    userName: email,
     attestationType: "none",
     supportedAlgorithmIDs: [-7, -257],
 
@@ -38,13 +30,15 @@ export async function POST(request: NextRequest) {
   };
 
   const registrationOptions = await generateRegistrationOptions(opts);
+  const session = getSession();
 
-  newUser.currentChallenge = registrationOptions.challenge;
-  saveUser(newUser); //このタイミングでいいのか？
+  const obj: RegistrationInfo = {
+    email,
+    challenge: registrationOptions.challenge,
+    userID: registrationOptions.user.id,
+  };
 
-  return new Response(JSON.stringify(registrationOptions), {
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+  RedisDB.Instance.set("registration", session.id, obj);
+
+  return NextResponse.json(registrationOptions);
 }

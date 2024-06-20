@@ -6,6 +6,8 @@ import {
   verifyAuthenticationResponse,
 } from "@simplewebauthn/server";
 import { rpID, expectedOrigin } from "../../constant";
+import { AuthenticationResponseJSON } from "@simplewebauthn/types";
+import { RedisDB } from "@/libs/redis";
 
 export async function POST(request: NextRequest) {
   const session = getSession();
@@ -13,25 +15,27 @@ export async function POST(request: NextRequest) {
     return new Response("Unauthorized", { status: 401 });
   }
 
-  const user = getUser(session.id);
-  if (!user) {
-    return new Response("Unauthorized", { status: 401 });
-  }
-  const response = await request.json();
-  const expectedChallenge = user.currentChallenge;
+  const expectedChallenge = await RedisDB.Instance.get<string>(
+    "authentication",
+    session.id,
+  );
   if (!expectedChallenge) {
-    return new Response("Something error happened.", {
-      status: 400,
-    });
+    return new Response("Something error happened", { status: 401 });
   }
 
-  let dbAuthenticator;
-  for (const dev of user.devices) {
-    if (dev.credentialID === response.id) {
-      dbAuthenticator = dev;
-      break;
-    }
+  const response: AuthenticationResponseJSON = await request.json();
+
+  const userID = response.response.userHandle;
+  if (!userID) {
+    return new Response("User not found", { status: 401 });
   }
+
+  const user = await getUser(userID);
+  if (!user) {
+    return new Response("User not found", { status: 404 });
+  }
+
+  const dbAuthenticator = user.device;
 
   if (!dbAuthenticator) {
     return new Response("Authenticator is not registered with this site", {
@@ -65,7 +69,7 @@ export async function POST(request: NextRequest) {
     dbAuthenticator.counter = authenticationInfo.newCounter;
   }
 
-  user.currentChallenge = undefined;
+  RedisDB.Instance.set("authentication", session.id, undefined);
   return new Response(JSON.stringify({ verified }), {
     headers: {
       "Content-Type": "application/json",

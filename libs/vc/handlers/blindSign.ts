@@ -24,7 +24,7 @@ export const generateHolderSecretCommitment = async (holderSecret: string) => {
 };
 
 type GenerateBlindSignVCProps = {
-  doc: string;
+  doc: unknown;
   keyPairs: string;
   commitment: string;
   pokForCommitment: string;
@@ -50,8 +50,8 @@ export const generateBlindSignVC = async ({
   } else {
     const vc = await blindSign(
       commitment,
-      JSON.parse(JSON.parse(doc)),
-      JSON.parse(JSON.parse(keyPairs)),
+      doc as VC,
+      JSON.parse(keyPairs),
       documentLoader,
     );
     return { ok: true, value: vc };

@@ -1,5 +1,6 @@
 "use client";
 
+import { RedisDB } from "@/libs/redis";
 import { exampleKeyPairs } from "@/libs/vc/data";
 import { exampleDocs } from "@/libs/vc/data/doc";
 import { documentLoader } from "@/libs/vc/handlers/documentLoader";
@@ -20,6 +21,21 @@ export default () => {
       <div>This is Wallet Home</div>
       <button className="btn" onClick={generateVCHandler}>
         Issue VC
+      </button>
+      <button
+        onClick={async () => {
+          await RedisDB.Instance.set("wallet", "test", "test123");
+        }}
+      >
+        セット
+      </button>
+      <button
+        onClick={async () => {
+          const result = await RedisDB.Instance.get("wallet", "test");
+          console.log(result);
+        }}
+      >
+        ゲット
       </button>
     </main>
   );

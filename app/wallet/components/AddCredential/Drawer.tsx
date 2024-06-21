@@ -13,21 +13,25 @@ import {
   generateHolderSecretCommitment,
   unblindVC,
 } from "@/libs/vc/handlers/blindSign";
+import { useCookies } from "next-client-cookies";
 import { useState } from "react";
-import { appendOrCreateUserVC } from "../../handlers/userStore";
 import { AddCredentialInfoTable } from "./InfoTable";
 import { AddCredentialQRReader } from "./QRReader";
 
 export const AddCredentialDrawerContent = () => {
   const [issueId, setIssueId] = useState("");
+  const cookies = useCookies();
 
   const handleScan = (_issueId: string) => {
     setIssueId(_issueId);
   };
 
   const handleReceiveVC = async () => {
-    // TODO: MUST: HolderのUserIDの取り出し
-    const userId = "dummy-dummy-dummy-user-id";
+    const userId = cookies.get("wallet-user-id");
+    if (!userId) {
+      throw new Error("User ID not found");
+    }
+
     const { commitment, blinding, pokForCommitment } =
       await generateHolderSecretCommitment(userId);
     const data = await fetch("/issuer/api", {
@@ -42,8 +46,14 @@ export const AddCredentialDrawerContent = () => {
     });
     const vc_dash = await data.json();
     const vc = await unblindVC(vc_dash, blinding);
-    await appendOrCreateUserVC(userId, vc);
-    // TODO: MUST: ここで、VCを永続化する
+
+    fetch("/wallet/api/vc", {
+      method: "POST",
+      body: JSON.stringify({
+        userId,
+        vc: vc,
+      }),
+    });
   };
 
   return (
@@ -60,7 +70,7 @@ export const AddCredentialDrawerContent = () => {
       ) : (
         <AddCredentialInfoTable
           issueId={issueId}
-          issuerDomain="https://example.com"
+          issuerDomain="https://passkey-hackathon-2024-sakolab.vercel.app"
         />
       )}
 

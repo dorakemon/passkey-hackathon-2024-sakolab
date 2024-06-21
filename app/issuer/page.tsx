@@ -71,8 +71,8 @@ export default () => {
             required
             className="w-full px-3 py-2 border border-gray-700 rounded-lg bg-gray-800 text-white"
           >
-            <option value="male">男性</option>
-            <option value="female">女性</option>
+            <option value="男性">男性</option>
+            <option value="女性">女性</option>
           </select>
         </div>
         <div>

@@ -1,7 +1,5 @@
 import { RedisDB } from "@/libs/redis";
 
-const servicePrefix = "wallet-credentials";
-
 type VC = object;
 type UserCredentialsStore = VC[];
 
@@ -9,18 +7,18 @@ type UserCredentialsStore = VC[];
 
 export const appendOrCreateUserVC = async (userID: string, vc: VC) => {
   let userVCs = await RedisDB.Instance.get<UserCredentialsStore>(
-    servicePrefix,
+    "wallet:user:vcs",
     userID,
   );
   if (!userVCs) {
     userVCs = [];
   }
-  userVCs.push(vc);
+  userVCs.push(JSON.stringify(vc) as any);
   // TODO: APIの見直し
-  await RedisDB.Instance.delete(servicePrefix, userID);
-  await RedisDB.Instance.set(servicePrefix, userID, userVCs);
+  await RedisDB.Instance.delete("wallet:user:vcs", userID);
+  await RedisDB.Instance.set("wallet:user:vcs", userID, userVCs);
 };
 
 export const getUserVCs = (userID: string) => {
-  return RedisDB.Instance.get<VC[]>(servicePrefix, userID);
+  return RedisDB.Instance.get<VC[]>("wallet:user:vcs", userID);
 };

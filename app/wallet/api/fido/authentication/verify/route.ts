@@ -4,7 +4,7 @@ import {
   verifyAuthenticationResponse,
 } from "@simplewebauthn/server";
 import { AuthenticationResponseJSON } from "@simplewebauthn/types";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { expectedOrigin, rpID } from "../../constant";
 import { deleteSession, getSession } from "../../session";
 import { getUserInfo } from "../../user";
@@ -87,9 +87,8 @@ export async function POST(request: NextRequest) {
 
   deleteSession(sessionId);
 
-  return new Response(JSON.stringify({ verified }), {
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+  let res = NextResponse.json({ verified });
+  res.headers.set("Content-Type", "application/json");
+  res.cookies.set("wallet-user-id", userID);
+  return res;
 }

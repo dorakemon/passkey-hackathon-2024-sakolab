@@ -8,6 +8,8 @@ import {
 import { MyNumberCard } from "../../components/CredentialsCard";
 
 import { ReadOnlyMonacoEditor } from "@/components/ReadOnlyMonacoEditor/page";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 import { PresentCredentialButton } from "../../components/PresentCredential/Button";
 import { getUserVCs } from "../../handlers/userStore";
 import {
@@ -15,9 +17,8 @@ import {
   vcToBase4AttributesAndId,
 } from "../../handlers/vcViewer";
 
-const fetchOneCredential = async (vcId: string) => {
-  // TODO: Fix this user ID
-  const vcs = await getUserVCs("b133d4ad-c2b6-4844-9e71-8237b9be4790");
+const fetchOneCredential = async (vcId: string, userId: string) => {
+  const vcs = await getUserVCs(userId);
   if (!vcs) {
     return null;
   }
@@ -29,7 +30,13 @@ const fetchOneCredential = async (vcId: string) => {
 };
 
 export default async ({ params }: { params: { slug: string } }) => {
-  const vc = await fetchOneCredential(params.slug);
+  const cookieStore = cookies();
+  const userId = cookieStore.get("wallet-user-id")?.value;
+  if (!userId) {
+    redirect("/wallet/auth/login");
+  }
+
+  const vc = await fetchOneCredential(params.slug, userId);
   if (!vc) {
     return <div>証明書が見つかりませんでした</div>;
   }

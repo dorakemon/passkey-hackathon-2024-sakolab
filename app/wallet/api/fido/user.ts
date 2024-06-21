@@ -1,5 +1,6 @@
 import { RedisDB } from "@/libs/redis";
 import { AuthenticatorDevice } from "@simplewebauthn/types";
+import { VC } from "@zkp-ld/jsonld-proofs";
 import { nanoid } from "nanoid";
 
 type UserId = string;
@@ -21,7 +22,7 @@ export const getUserInfo = async (userId: UserId) => {
 export const saveUser = async (
   user: User,
   userSecretID: string,
-  walletVC: string,
+  walletVC: VC,
 ) => {
   const promises = [
     RedisDB.Instance.set("wallet:user:info", user.id, user, true),

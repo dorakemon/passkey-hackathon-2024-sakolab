@@ -2,7 +2,7 @@ import {
   GenerateAuthenticationOptionsOpts,
   generateAuthenticationOptions,
 } from "@simplewebauthn/server";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { rpID, timeout } from "../../constant";
 import { createSessionId, setSession } from "../../session";
 
@@ -21,7 +21,7 @@ export async function GET(request: NextRequest) {
     challenge: options.challenge,
   });
 
-  let response = new Response(JSON.stringify(options), {
+  let response = NextResponse.json(options, {
     headers: {
       "Content-Type": "application/json",
     },

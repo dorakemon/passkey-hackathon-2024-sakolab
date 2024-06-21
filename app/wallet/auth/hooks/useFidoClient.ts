@@ -24,7 +24,10 @@ export const useFidoClient = () => {
     let registrationResponse;
     try {
       const opts = await response.json();
-
+      if (opts.error) {
+        alert(opts.error);
+        return;
+      }
       registrationResponse = await startRegistration(opts);
       console.log(JSON.stringify(registrationResponse));
     } catch (error) {
@@ -49,7 +52,7 @@ export const useFidoClient = () => {
       // alert("Registration successful");
       router.replace("/wallet/credentials");
     } else {
-      alert("Registration failed");
+      alert(`Registration failed.\n${verificationJSON.error}`);
     }
   };
 
@@ -59,7 +62,10 @@ export const useFidoClient = () => {
     let authenticationResponse;
     try {
       const opts = await response.json();
-
+      if (opts.error) {
+        alert(opts.error);
+        return;
+      }
       authenticationResponse = await startAuthentication(opts);
       console.log(JSON.stringify(authenticationResponse));
     } catch (error) {
@@ -82,7 +88,7 @@ export const useFidoClient = () => {
       // alert("Authentication successful");
       router.replace("/wallet/credentials");
     } else {
-      alert("Authentication failed");
+      alert(`Authentication failed.\n${verificationJSON.error}`);
     }
   };
 

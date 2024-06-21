@@ -55,7 +55,7 @@ export default () => {
                 href="/wallet/auth/add-device"
                 className="text-blue-400 underline"
               >
-                別の端末でログイン
+                別の端末を追加
               </a>
             </div>
           </CardFooter>

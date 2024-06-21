@@ -3,7 +3,8 @@ import { RegistrationResponseJSON } from "@simplewebauthn/types";
 import { NextRequest } from "next/server";
 import { SESSION_COOKIE_NAME, expectedOrigin, rpID } from "../../constant";
 import { deleteSession, getSession } from "../../session";
-import { createUser, saveUser } from "../../user";
+import { createUserSecretID, saveUser } from "../../user";
+import { generateWalletAttestationVC } from "../../wallet-attestation";
 
 export async function POST(request: NextRequest) {
   const sessionId = request.cookies.get(SESSION_COOKIE_NAME)?.value;
@@ -63,9 +64,21 @@ export async function POST(request: NextRequest) {
       transports: response.response.transports,
     };
 
-    const user = createUser(userID, email, newDevice);
+    const userSecretID = createUserSecretID();
+    const walletVC = await generateWalletAttestationVC(userSecretID);
+    if (!walletVC.ok) {
+      return new Response("Failed to generate wallet VC", { status: 500 });
+    }
 
-    saveUser(user);
+    saveUser(
+      {
+        id: userID,
+        email: email,
+        devices: [newDevice],
+      },
+      userSecretID,
+      JSON.stringify(walletVC.value),
+    );
   }
 
   deleteSession(sessionId);

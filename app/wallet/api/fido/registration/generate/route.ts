@@ -5,12 +5,16 @@ import {
 import { NextRequest, NextResponse } from "next/server";
 import { SESSION_COOKIE_NAME, rpID, rpName } from "../../constant";
 import { createSessionId, setSession } from "../../session";
+import { isEmailAlreadyRegistered } from "../../user";
 import { RegistrationInfo } from "../type";
 
 export async function POST(req: NextRequest) {
   const { email } = await req.json();
   if (!email) {
     return new Response("Email is required", { status: 400 });
+  }
+  if (await isEmailAlreadyRegistered(email)) {
+    return new Response("Email is already registered", { status: 400 });
   }
 
   const opts: GenerateRegistrationOptionsOpts = {

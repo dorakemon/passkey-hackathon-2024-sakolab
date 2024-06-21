@@ -7,7 +7,7 @@ import { AuthenticationResponseJSON } from "@simplewebauthn/types";
 import { NextRequest } from "next/server";
 import { expectedOrigin, rpID } from "../../constant";
 import { deleteSession, getSession } from "../../session";
-import { getUser } from "../../user";
+import { getUserInfo } from "../../user";
 
 export async function POST(request: NextRequest) {
   const sessionId = request.cookies.get("wallet-session")?.value;
@@ -34,12 +34,13 @@ export async function POST(request: NextRequest) {
     return new Response("User not found", { status: 401 });
   }
 
-  const user = await getUser(userID);
+  const user = await getUserInfo(userID);
   if (!user) {
     return new Response("User not found", { status: 404 });
   }
 
-  const dbAuthenticator = user.device;
+  // TODO: ここでcredential IDによる検索を行う
+  const dbAuthenticator = user.devices[0];
 
   if (!dbAuthenticator) {
     return new Response("Authenticator is not registered with this site", {

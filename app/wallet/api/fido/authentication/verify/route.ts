@@ -103,12 +103,8 @@ export async function POST(request: NextRequest) {
 
   deleteSession(sessionId);
 
-  return NextResponse.json(
-    { verified },
-    {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    },
-  );
+  let res = NextResponse.json({ verified });
+  res.headers.set("Content-Type", "application/json");
+  res.cookies.set("wallet-user-id", userID);
+  return res;
 }

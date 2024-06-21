@@ -62,6 +62,10 @@ export async function POST(request: NextRequest) {
     });
   }
 
+  await RedisDB.Instance.set<IssueDataStore>(ISSUER_SERVICE_NAME, issueId, {
+    status: "issued",
+  });
+
   return new NextResponse(JSON.stringify(vcResult.value), {
     status: 201,
   });

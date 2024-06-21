@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { CookiesProvider } from "next-client-cookies/server";
 import "./wallet.css";
 
 export const metadata: Metadata = {
@@ -14,7 +15,7 @@ export default ({
 }>) => {
   return (
     <main className="flex min-h-screen flex-col items-center justify-between">
-      {children}
+      <CookiesProvider>{children}</CookiesProvider>
     </main>
   );
 };

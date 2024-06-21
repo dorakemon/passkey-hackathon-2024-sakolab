@@ -41,7 +41,7 @@ export const PresentCredentialDrawerContent = () => {
       ) : (
         <PresentCredentialInfoTable
           verifierChallenge={verifierChallenge}
-          issuerDomain="https://example.com"
+          verifierDomain="https://passkey-hackathon-2024-sakolab.vercel.app/"
           requestAttributes={requestAttributes}
         />
       )}

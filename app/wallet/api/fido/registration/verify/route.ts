@@ -79,11 +79,9 @@ export async function POST(request: NextRequest) {
 
     const userSecretID = createUserSecretID();
     const walletVC = await generateWalletAttestationVC(userSecretID);
-    if (!walletVC.ok) {
-      return new Response("Failed to generate wallet VC", { status: 500 });
-    }
-
     const devices = await getCurrentUserDevices(userID);
+
+    console.log(walletVC);
 
     saveUser(
       {
@@ -92,18 +90,14 @@ export async function POST(request: NextRequest) {
         devices: [...devices, newDevice],
       },
       userSecretID,
-      JSON.stringify(walletVC.value),
+      walletVC,
     );
   }
 
   deleteSession(sessionId);
 
-  return NextResponse.json(
-    { verified },
-    {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    },
-  );
+  let res = NextResponse.json({ verified });
+  res.headers.set("Content-Type", "application/json");
+  res.cookies.set("wallet-user-id", userID);
+  return res;
 }

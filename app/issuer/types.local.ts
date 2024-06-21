@@ -12,6 +12,4 @@ export type IssueDataStore =
     }
   | {
       status: "issued";
-      issueId: string;
-      vc: string;
     };

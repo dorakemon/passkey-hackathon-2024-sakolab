@@ -1,12 +1,12 @@
 interface PresentCredentialInfoTableProps {
   verifierChallenge: string;
-  issuerDomain: string;
+  verifierDomain: string;
   requestAttributes: string[];
 }
 
 export const PresentCredentialInfoTable = ({
   verifierChallenge,
-  issuerDomain,
+  verifierDomain,
   requestAttributes,
 }: PresentCredentialInfoTableProps) => {
   return (
@@ -22,7 +22,7 @@ export const PresentCredentialInfoTable = ({
           <td className="font-bold py-2 px-4 align-top text-center text-sm">
             検証者
           </td>
-          <td className="py-2 break-all text-sm">{issuerDomain}</td>
+          <td className="py-2 break-all text-sm">{verifierDomain}</td>
         </tr>
         <tr>
           <td className="font-bold py-2 px-4 align-top text-center text-sm">

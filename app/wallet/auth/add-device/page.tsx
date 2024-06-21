@@ -18,7 +18,7 @@ export default () => {
   return (
     <main className="flex flex-col items-center justify-center min-h-screen py-2 mx-10">
       <header className="w-full max-w-md mt-12 space-y-3 flex flex-col">
-        <h1 className="text-3xl font-bold">別の端末でログイン</h1>
+        <h1 className="text-3xl font-bold">別の端末を追加</h1>
         <p className="text-gray-300">既存のアカウントに別のPasskeysを作る</p>
       </header>
 

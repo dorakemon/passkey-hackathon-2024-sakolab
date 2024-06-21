@@ -32,9 +32,12 @@ export const formPostAction = async (formData: FormData) => {
 };
 
 export const getRedisKey = async (uuid: string) => {
-  const data = await RedisDB.Instance.get(ISSUER_SERVICE_NAME, uuid);
+  const data = await RedisDB.Instance.get<IssueDataStore>(
+    ISSUER_SERVICE_NAME,
+    uuid,
+  );
 
-  if (data) {
+  if (data && data.status === "issued") {
     redirect(`/issuer/${uuid}/success`);
   }
 };

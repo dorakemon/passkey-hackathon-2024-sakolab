@@ -1,6 +1,6 @@
 interface PresentCredentialInfoTableProps {
   verifierChallenge: string;
-  issuerDomain: string;
+  verifierDomain: string;
   requestAttributes: string[];
 }
 

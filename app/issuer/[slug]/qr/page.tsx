@@ -1,7 +1,8 @@
 import { QRCode } from "@/components/QRCode";
+import { getRedisKey } from "../../servers";
 
-export default ({ params }: { params: { slug: string } }) => {
-  console.log(params.slug);
+export default async ({ params }: { params: { slug: string } }) => {
+  await getRedisKey(params.slug);
   return (
     <div className="flex flex-col justify-center items-center">
       <h2 className="text-3xl font-bold text-white">QRの読み取り</h2>

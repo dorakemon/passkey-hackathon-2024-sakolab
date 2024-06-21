@@ -14,7 +14,7 @@ const initMynumberDoc = {
     type: "MyNumberCard",
     name: "太郎",
     birthdate: "2024-1-1",
-    gender: "male",
+    gender: "男性",
     address: "新宿区",
   },
   proof: {

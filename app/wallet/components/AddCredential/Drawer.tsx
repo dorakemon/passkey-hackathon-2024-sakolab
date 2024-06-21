@@ -47,13 +47,14 @@ export const AddCredentialDrawerContent = () => {
     const vc_dash = await data.json();
     const vc = await unblindVC(vc_dash, blinding);
 
-    fetch("/wallet/api/vc", {
+    await fetch("/wallet/api/vc", {
       method: "POST",
       body: JSON.stringify({
         userId,
         vc: vc,
       }),
     });
+    window.location.reload();
   };
 
   return (

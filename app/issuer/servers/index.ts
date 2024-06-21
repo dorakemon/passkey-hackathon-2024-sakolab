@@ -35,6 +35,6 @@ export const getRedisKey = async (uuid: string) => {
   const data = await RedisDB.Instance.get(ISSUER_SERVICE_NAME, uuid);
 
   if (data) {
-    redirect(`/verifier/${uuid}/result`);
+    redirect(`/issuer/${uuid}/success`);
   }
 };

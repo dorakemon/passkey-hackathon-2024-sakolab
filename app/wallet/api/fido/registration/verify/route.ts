@@ -3,7 +3,11 @@ import { RegistrationResponseJSON } from "@simplewebauthn/types";
 import { NextRequest } from "next/server";
 import { SESSION_COOKIE_NAME, expectedOrigin, rpID } from "../../constant";
 import { deleteSession, getSession } from "../../session";
-import { createUserSecretID, saveUser } from "../../user";
+import {
+  createUserSecretID,
+  getCurrentUserDevices,
+  saveUser,
+} from "../../user";
 import { generateWalletAttestationVC } from "../../wallet-attestation";
 
 export async function POST(request: NextRequest) {
@@ -70,11 +74,13 @@ export async function POST(request: NextRequest) {
       return new Response("Failed to generate wallet VC", { status: 500 });
     }
 
+    const devices = await getCurrentUserDevices(userID);
+
     saveUser(
       {
         id: userID,
         email: email,
-        devices: [newDevice],
+        devices: [...devices, newDevice],
       },
       userSecretID,
       JSON.stringify(walletVC.value),

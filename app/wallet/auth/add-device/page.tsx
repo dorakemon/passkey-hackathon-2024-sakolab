@@ -59,6 +59,7 @@ export default () => {
               </a>
             </div>
           </CardFooter>
+          <Input type="hidden" name="recovery" value="true" className="h-12" />
         </form>
       </Card>
     </main>

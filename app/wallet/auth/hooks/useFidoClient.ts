@@ -8,6 +8,7 @@ export const useFidoClient = () => {
   const router = useRouter();
   const handleRegistration = async (formData: FormData) => {
     const email = formData.get("email") as string;
+    const recovery = formData.get("recovery") as string | "false";
     if (!email) {
       alert("Please enter an email address");
       return;
@@ -17,7 +18,7 @@ export const useFidoClient = () => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ email: email }),
+      body: JSON.stringify({ email: email, recovery: recovery === "true" }),
     });
 
     let registrationResponse;

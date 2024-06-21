@@ -11,18 +11,24 @@ import { RegistrationInfo } from "../type";
 export async function POST(req: NextRequest) {
   const { email, recovery } = await req.json();
   if (!email) {
-    return new Response("Email is required", { status: 400 });
+    return NextResponse.json({ error: "Email is required" }, { status: 400 });
   }
 
   const storedUserID = await getUserIdByEmail(email);
   const isEmailAlreadyRegistered = storedUserID !== null;
   // !recovery なら新規登録
   if (!recovery && isEmailAlreadyRegistered) {
-    return new Response("Email is already registered", { status: 400 });
+    return NextResponse.json(
+      { error: "Email is already registered" },
+      { status: 400 },
+    );
   }
 
   if (recovery && !isEmailAlreadyRegistered) {
-    return new Response("Email is not registered", { status: 400 });
+    return NextResponse.json(
+      { error: "Email is not registered" },
+      { status: 400 },
+    );
   }
 
   // 新規登録時はundefinedにして新しくUserIDを生成

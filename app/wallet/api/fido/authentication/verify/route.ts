@@ -4,7 +4,7 @@ import {
   verifyAuthenticationResponse,
 } from "@simplewebauthn/server";
 import { AuthenticationResponseJSON } from "@simplewebauthn/types";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { expectedOrigin, rpID } from "../../constant";
 import { deleteSession, getSession } from "../../session";
 import { getUserInfo } from "../../user";
@@ -12,31 +12,40 @@ import { getUserInfo } from "../../user";
 export async function POST(request: NextRequest) {
   const sessionId = request.cookies.get("wallet-session")?.value;
   if (!sessionId) {
-    return new Response("Unauthorized - sessionId is not found", {
-      status: 401,
-    });
+    return NextResponse.json(
+      { error: "Unauthorized - sessionId is not found" },
+      {
+        status: 401,
+      },
+    );
   }
 
   const session = await getSession(sessionId);
   if (!session) {
-    return new Response("Unauthorized - session was expired", { status: 401 });
+    return NextResponse.json(
+      { error: "Unauthorized - session was expired" },
+      { status: 401 },
+    );
   }
 
   const expectedChallenge = session.challenge;
   if (!expectedChallenge) {
-    return new Response("Something error happened", { status: 401 });
+    return NextResponse.json(
+      { error: "Something error happened" },
+      { status: 401 },
+    );
   }
 
   const response: AuthenticationResponseJSON = await request.json();
 
   const userID = response.response.userHandle;
   if (!userID) {
-    return new Response("User not found", { status: 401 });
+    return NextResponse.json({ error: "User not found" }, { status: 401 });
   }
 
   const user = await getUserInfo(userID);
   if (!user) {
-    return new Response("User not found", { status: 404 });
+    return NextResponse.json({ error: "User not found" }, { status: 401 });
   }
 
   let dbAuthenticator;
@@ -48,9 +57,10 @@ export async function POST(request: NextRequest) {
   }
 
   if (!dbAuthenticator) {
-    return new Response("Authenticator is not registered with this site", {
-      status: 400,
-    });
+    return NextResponse.json(
+      { error: "Authenticator is not registered with this site" },
+      { status: 400 },
+    );
   }
 
   let verification: VerifiedAuthenticationResponse;
@@ -72,12 +82,15 @@ export async function POST(request: NextRequest) {
     verification = await verifyAuthenticationResponse(opts);
   } catch (error) {
     console.error(error);
-    return new Response(JSON.stringify({ error: (error as any).message }), {
-      status: 400,
-      headers: {
-        "Content-Type": "application/json",
+    return NextResponse.json(
+      { error: (error as any).message },
+      {
+        status: 400,
+        headers: {
+          "Content-Type": "application/json",
+        },
       },
-    });
+    );
   }
 
   const { verified, authenticationInfo } = verification;
@@ -87,9 +100,12 @@ export async function POST(request: NextRequest) {
 
   deleteSession(sessionId);
 
-  return new Response(JSON.stringify({ verified }), {
-    headers: {
-      "Content-Type": "application/json",
+  return NextResponse.json(
+    { verified },
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
     },
-  });
+  );
 }

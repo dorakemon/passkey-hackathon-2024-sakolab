@@ -1,6 +1,6 @@
 import { verifyRegistrationResponse } from "@simplewebauthn/server";
 import { RegistrationResponseJSON } from "@simplewebauthn/types";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { SESSION_COOKIE_NAME, expectedOrigin, rpID } from "../../constant";
 import { deleteSession, getSession } from "../../session";
 import {
@@ -13,21 +13,27 @@ import { generateWalletAttestationVC } from "../../wallet-attestation";
 export async function POST(request: NextRequest) {
   const sessionId = request.cookies.get(SESSION_COOKIE_NAME)?.value;
   if (!sessionId) {
-    return new Response("Unauthorized - sessionId is not found", {
-      status: 401,
-    });
+    return NextResponse.json(
+      { error: "Unauthorized - sessionId is not found" },
+      {
+        status: 401,
+      },
+    );
   }
 
   const sessionData = await getSession(sessionId);
   if (!sessionData) {
-    return new Response("Unauthorized", { status: 401 });
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const { email, challenge, userID } = sessionData;
   if (!email || !challenge || !userID) {
-    return new Response("Unauthorized - sessionData may be lost", {
-      status: 401,
-    });
+    return NextResponse.json(
+      { error: "Unauthorized - sessionData may be lost" },
+      {
+        status: 401,
+      },
+    );
   }
 
   const response: RegistrationResponseJSON = await request.json();
@@ -45,12 +51,15 @@ export async function POST(request: NextRequest) {
       });
   } catch (error) {
     console.error(error);
-    return new Response(JSON.stringify({ error: (error as any).message }), {
-      status: 400,
-      headers: {
-        "Content-Type": "application/json",
+    return NextResponse.json(
+      { error: (error as any).message },
+      {
+        status: 400,
+        headers: {
+          "Content-Type": "application/json",
+        },
       },
-    });
+    );
   }
 
   if (!verification) {
@@ -89,9 +98,12 @@ export async function POST(request: NextRequest) {
 
   deleteSession(sessionId);
 
-  return new Response(JSON.stringify({ verified }), {
-    headers: {
-      "Content-Type": "application/json",
+  return NextResponse.json(
+    { verified },
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
     },
-  });
+  );
 }

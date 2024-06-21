@@ -63,7 +63,6 @@ export async function POST(request: NextRequest) {
       },
       requireUserVerification: true,
     };
-    console.log(opts);
     verification = await verifyAuthenticationResponse(opts);
   } catch (error) {
     console.error(error);

@@ -31,7 +31,8 @@ export const useFidoClient = () => {
       registrationResponse = await startRegistration(opts);
       console.log(JSON.stringify(registrationResponse));
     } catch (error) {
-      throw error;
+      alert(error);
+      return;
     }
 
     const verificationResponse = await fetch(
@@ -69,7 +70,8 @@ export const useFidoClient = () => {
       authenticationResponse = await startAuthentication(opts);
       console.log(JSON.stringify(authenticationResponse));
     } catch (error) {
-      throw error;
+      alert(error);
+      return;
     }
 
     const verificationResponse = await fetch(

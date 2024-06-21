@@ -78,7 +78,7 @@ export const AddCredentialDrawerContent = () => {
       <DrawerFooter>
         {issueId && (
           <Button className="w-full" onClick={handleReceiveVC}>
-            受け取り
+            提示
           </Button>
         )}
         <DrawerClose className="w-full">キャンセル</DrawerClose>

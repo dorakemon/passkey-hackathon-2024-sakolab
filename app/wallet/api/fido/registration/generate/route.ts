@@ -7,6 +7,7 @@ import { SESSION_COOKIE_NAME, rpID, rpName } from "../../constant";
 import { createSessionId, setSession } from "../../session";
 import { getCurrentUserDevices, getUserIdByEmail } from "../../user";
 import { RegistrationInfo } from "../type";
+import { isoBase64URL, isoUint8Array } from "@simplewebauthn/server/helpers";
 
 export async function POST(req: NextRequest) {
   const { email, recovery } = await req.json();
@@ -32,7 +33,9 @@ export async function POST(req: NextRequest) {
   }
 
   // 新規登録時はundefinedにして新しくUserIDを生成
-  const userID = storedUserID ? Buffer.from(storedUserID) : undefined;
+  const userID = storedUserID
+    ? isoUint8Array.fromUTF8String(storedUserID)
+    : undefined;
   const devices = storedUserID ? await getCurrentUserDevices(storedUserID) : [];
   const opts: GenerateRegistrationOptionsOpts = {
     rpName,
@@ -61,7 +64,8 @@ export async function POST(req: NextRequest) {
   const obj: RegistrationInfo = {
     email,
     challenge: registrationOptions.challenge,
-    userID: storedUserID ?? registrationOptions.user.id,
+    userID:
+      storedUserID ?? isoBase64URL.toUTF8String(registrationOptions.user.id),
   };
   setSession(sessionId, obj);
 

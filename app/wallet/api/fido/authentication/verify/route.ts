@@ -8,6 +8,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { expectedOrigin, rpID } from "../../constant";
 import { deleteSession, getSession } from "../../session";
 import { getUserInfo } from "../../user";
+import { isoBase64URL } from "@simplewebauthn/server/helpers";
 
 export async function POST(request: NextRequest) {
   const sessionId = request.cookies.get("wallet-session")?.value;
@@ -38,7 +39,9 @@ export async function POST(request: NextRequest) {
 
   const response: AuthenticationResponseJSON = await request.json();
 
-  const userID = response.response.userHandle;
+  const userID = response.response.userHandle
+    ? isoBase64URL.toUTF8String(response.response.userHandle)
+    : undefined;
   if (!userID) {
     return NextResponse.json({ error: "User not found" }, { status: 401 });
   }

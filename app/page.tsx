@@ -5,7 +5,7 @@ import remarkGfm from "remark-gfm";
 const markdownString = `
 # 認証器に紐づいた検証可能なデジタル証明書
 
-**チームSKKN(佐古研)**   
+## チームSKKN（早稲田大学佐古研究室） 
 渡邉健   
 川原悠佑   
 水野重弦   
@@ -15,14 +15,27 @@ const markdownString = `
 
 ![PDF](/5分スライド.pdf)
 
+## デモ動画
+<video height=70vw controls>
+  <source src="Passkey - HD 720p.mov" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+
+## デモアプリ
+
+`;
+
+const markdownString2 = `
 ## Our information  
 
 [研究室link](https://sako-lab.jp/index.html)
+
+[Lab link (English)](https://sako-lab.jp/en/index.html)
 `;
 
 export default function Home() {
   const components = {
-    img: ({  ...props }) => {
+    img: ({ ...props }) => {
       if (props.alt === "PDF") {
         return (
           <iframe
@@ -85,7 +98,7 @@ export default function Home() {
         </ReactMarkdown>
       </div>
 
-      <div className="flex flex-col items-center justify-center w-full max-w-5xl mt-24"></div>
+      {/* <div className="flex flex-col items-center justify-center w-full max-w-5xl mt-24"></div> */}
 
       <div className="mb-32 grid text-center lg:mb-0 lg:w-full lg:max-w-5xl lg:grid-cols-4 lg:text-left">
         {/* <h2 className="mb-3 text-2xl font-semibold">デモアプリケーション</h2> */}
@@ -108,7 +121,7 @@ export default function Home() {
 
         <a
           href="https://passkey-hackathon-2024-sakolab.vercel.app/issuer"
-          className="group rounded-lg border border-transparent px- py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
+          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -153,9 +166,19 @@ export default function Home() {
             </span>
           </h2>
           <p className="m-0 max-w-[30ch] text-balance text-sm opacity-50">
-            今回作成したアプリケーションのソースコード
+            今回作成したアプリケーションのソースコードです
           </p>
         </a>
+      </div>
+      <div>
+        <ReactMarkdown
+          remarkPlugins={[remarkGfm]}
+          rehypePlugins={[rehypeRaw]}
+          components={components}
+          className="markdown"
+        >
+          {markdownString2}
+        </ReactMarkdown>
       </div>
     </main>
   );

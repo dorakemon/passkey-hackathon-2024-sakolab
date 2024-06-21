@@ -1,0 +1,16 @@
+{
+  "name": "SakoLab VC Wallet",
+  "short_name": "SL Wallet",
+  "start_url": "/wallet",
+  "display": "standalone",
+  "background_color": "#fff",
+  "theme_color": "#fff",
+  "description": "SakoLab VC Wallet for Passkey Hackathon",
+  "icons": [
+    {
+      "src": "/Sakolab.png",
+      "sizes": "460x460",
+      "type": "image/png"
+    }
+  ]
+}

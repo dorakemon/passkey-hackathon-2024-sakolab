@@ -36,6 +36,22 @@ export const createUserSecretID = (): string => {
   return nanoid(30);
 };
 
+export const getCurrentUserDevices = async (
+  userId: UserId,
+): Promise<AuthenticatorDevice[]> => {
+  const user = await getUserInfo(userId);
+  if (!user) {
+    return [];
+  }
+  return user.devices;
+};
+
+export const getUserIdByEmail = async (
+  email: string,
+): Promise<string | null> => {
+  return await RedisDB.Instance.get("wallet:email", email);
+};
+
 export const isEmailAlreadyRegistered = async (
   email: string,
 ): Promise<boolean> => {

@@ -39,8 +39,13 @@ export async function POST(request: NextRequest) {
     return new Response("User not found", { status: 404 });
   }
 
-  // TODO: ここでcredential IDによる検索を行う
-  const dbAuthenticator = user.devices[0];
+  let dbAuthenticator;
+  for (const dev of user.devices) {
+    if (dev.credentialID === response.id) {
+      dbAuthenticator = dev;
+      break;
+    }
+  }
 
   if (!dbAuthenticator) {
     return new Response("Authenticator is not registered with this site", {

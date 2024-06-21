@@ -30,6 +30,13 @@ export default () => {
             <a href="/wallet/auth/register" className="text-blue-400 underline">
               登録
             </a>
+            、
+            <a
+              href="/wallet/auth/add-device"
+              className="text-blue-400 underline"
+            >
+              別の端末でログイン
+            </a>
           </div>
         </CardContent>
       </Card>

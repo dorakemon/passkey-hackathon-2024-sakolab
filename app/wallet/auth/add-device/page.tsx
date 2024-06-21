@@ -18,8 +18,8 @@ export default () => {
   return (
     <main className="flex flex-col items-center justify-center min-h-screen py-2 mx-10">
       <header className="w-full max-w-md mt-12 space-y-3 flex flex-col">
-        <h1 className="text-3xl font-bold">アカウントの作成</h1>
-        <p className="text-gray-300">PassKeyで、Walletを作成しましょう</p>
+        <h1 className="text-3xl font-bold">別の端末でログイン</h1>
+        <p className="text-gray-300">既存のアカウントに別のPasskeysを作る</p>
       </header>
 
       <Card className="w-full mt-7 bg-slate-900">
@@ -43,7 +43,7 @@ export default () => {
               type="submit"
             >
               <KeyRound />
-              PassKeyの登録
+              PassKeyの追加
             </Button>
             <div className="flex justify-center mt-4">
               もしくは　
@@ -52,13 +52,14 @@ export default () => {
               </a>
               、
               <a
-                href="/wallet/auth/add-device"
+                href="/wallet/auth/register"
                 className="text-blue-400 underline"
               >
-                別の端末でログイン
+                新規登録
               </a>
             </div>
           </CardFooter>
+          <Input type="hidden" name="recovery" value="true" className="h-12" />
         </form>
       </Card>
     </main>

@@ -1,7 +1,6 @@
-import Image from "next/image";
 import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
+import remarkGfm from "remark-gfm";
 
 const markdownString = `
 # 認証器に紐づいた検証可能なデジタル証明書
@@ -23,7 +22,7 @@ const markdownString = `
 
 export default function Home() {
   const components = {
-    img: ({ node, ...props }) => {
+    img: ({  ...props }) => {
       if (props.alt === "PDF") {
         return (
           <iframe

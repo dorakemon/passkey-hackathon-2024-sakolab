@@ -45,12 +45,10 @@ export default () => {
               <KeyRound />
               PassKeyの追加
             </Button>
-            <div className="flex justify-center mt-4">
-              もしくは　
+            <div className="flex justify-center mt-6 flex-row gap-3">
               <a href="/wallet/auth/login" className="text-blue-400 underline">
                 ログイン
               </a>
-              、
               <a
                 href="/wallet/auth/register"
                 className="text-blue-400 underline"

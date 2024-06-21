@@ -79,7 +79,6 @@ export async function POST(request: NextRequest) {
     dbAuthenticator.counter = authenticationInfo.newCounter;
   }
 
-  // RedisDB.Instance.set("authentication", session.id, undefined);
   deleteSession(sessionId);
 
   return new Response(JSON.stringify({ verified }), {

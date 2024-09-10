@@ -15,6 +15,10 @@ export default ({
 }>) => {
   return (
     <main className="flex min-h-screen flex-col items-center justify-between">
+      <head>
+        <link rel="apple-touch-icon" sizes="180x180" href="/Sakolab.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/Sakolab.png" />
+      </head>
       <CookiesProvider>{children}</CookiesProvider>
     </main>
   );

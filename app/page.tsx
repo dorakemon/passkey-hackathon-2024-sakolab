@@ -11,6 +11,12 @@ const markdownString = `
 水野重弦   
 福田岐弦   
 
+## 受賞に関する記事
+
+- https://web.dev/blog/passkeys-hackathon-tokyo?hl=ja
+- https://fidoalliance.org/passkeys-hackathon-tokyo-a-showcase-of-innovation-and-excellence/
+
+
 ## 発表スライド
 
 ![PDF](/5分スライド.pdf)
@@ -22,7 +28,7 @@ const markdownString = `
 
 export default function Home() {
   const components = {
-    img: ({  ...props }) => {
+    img: ({ ...props }) => {
       if (props.alt === "PDF") {
         return (
           <iframe
